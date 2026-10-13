@@ -29,14 +29,14 @@ let data: response = {
 
 // Función que obtiene una nueva pregunta de la API
 export async function newQuestion() {
-    const respuesta = await fetch('https://opentdb.com/api.php?amount=1&type=boolean');
+    const respuesta = await fetch('https://opentdb.com/api.php?amount=1&type=boolean&difficulty=easy');
     if (!respuesta.ok) throw new ErrorQuestion();
     data = await respuesta.json();
 }
 
 // Función que devuelve la pregunta del JSON
 export async function getQuestion(): Promise<string> {
-    if(data.results.length === 0) await newQuestion();
+    await newQuestion();
     return data.results[0].question;
 }
 

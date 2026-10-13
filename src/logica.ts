@@ -1,4 +1,9 @@
 import * as api from  "./api.ts";
+import * as render from "./render.ts";
+
+const boton_true = document.querySelector("#true");
+const boton_false = document.querySelector("#false");
+const boton_reiniciar = document.querySelector("#reiniciar");
 
 export async function getQuestion(): Promise<string> {
     try {
@@ -15,3 +20,16 @@ export async function getQuestion(): Promise<string> {
         throw error;
     }
 }
+
+boton_true!.addEventListener("click", async () => {
+    console.log(await api.getAnswer());
+    if(await api.getAnswer() === "True"){await render.acierto();}
+    else {render.fallo(boton_true!, boton_false!, boton_reiniciar!);}
+});
+
+boton_false!.addEventListener("click", async () => {
+    if(await api.getAnswer() === "False"){await render.acierto();}
+    else {render.fallo(boton_true!, boton_false!, boton_reiniciar!);}
+});
+
+boton_reiniciar!.addEventListener("click", () => {location.reload();})
