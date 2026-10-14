@@ -3,6 +3,7 @@ import { newQuestion as apiNuewQuestion, getQuestion } from "./api.ts";
 
 // Aseguramos que el elemento existe con el !
 const question_box = document.querySelector("#question")!;
+const question_number_text = document.querySelector("#question_number_text")!;
 
 // Closure para incrementa el numero de la pregunta
 const incrementarNumero = numero_pregunta();
@@ -29,6 +30,7 @@ export async function newQuestion() {
 export async function acierto(){
     await newQuestion();
     document.querySelector("#question_number")!.textContent = String(incrementarNumero());
+    logic.comprobarVictoria();
 }
 
 export function fallo(boton_true:Element, boton_false:Element, boton_reiniciar:Element){
@@ -36,6 +38,17 @@ export function fallo(boton_true:Element, boton_false:Element, boton_reiniciar:E
     boton_true.setAttribute("hidden","");
     boton_false.setAttribute("hidden","");
     boton_reiniciar.removeAttribute("hidden");
+}
+
+export function victoria(boton_true: Element, boton_false: Element, boton_reiniciar: Element){
+    // Llamamos a fallo para que ponga el botón de reiniciar
+    fallo(boton_true, boton_false, boton_reiniciar);
+    
+    // Quitamos el texto de la pregunta por la que vamos
+    question_number_text.remove();
+
+    // Cambiamos el texto de la caja de preguntas por victorias
+    question_box.textContent = "Has ganado, felicidades! Has derrotado al mal sabio caballero..."
 }
 
 await apiNuewQuestion();

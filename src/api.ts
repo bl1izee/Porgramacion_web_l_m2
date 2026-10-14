@@ -1,4 +1,4 @@
-let numero_pregutna = -1;
+export let numero_pregutna = -1;
 
 // Creamos un error que extienda de la clase Error por si la API falla
 export class ErrorQuestion extends Error {

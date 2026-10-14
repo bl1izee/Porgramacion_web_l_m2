@@ -5,6 +5,12 @@ const boton_true = document.querySelector("#true");
 const boton_false = document.querySelector("#false");
 const boton_reiniciar = document.querySelector("#reiniciar");
 
+export function comprobarVictoria(){
+    if(api.numero_pregutna === 5){
+        render.victoria(boton_true!, boton_false!, boton_reiniciar!);
+    }
+}
+
 export async function getQuestion(): Promise<string> {
     try {
         return await api.getQuestion();
