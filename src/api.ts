@@ -1,3 +1,5 @@
+let numero_pregutna = -1;
+
 // Creamos un error que extienda de la clase Error por si la API falla
 export class ErrorQuestion extends Error {
   constructor() {
@@ -29,28 +31,28 @@ let data: response = {
 
 // Función que obtiene una nueva pregunta de la API
 export async function newQuestion() {
-    const respuesta = await fetch('https://opentdb.com/api.php?amount=1&type=boolean&difficulty=easy');
+    const respuesta = await fetch('https://opentdb.com/api.php?amount=5&type=boolean&difficulty=easy');
     if (!respuesta.ok) throw new ErrorQuestion();
     data = await respuesta.json();
 }
 
 // Función que devuelve la pregunta del JSON
 export async function getQuestion(): Promise<string> {
-    await newQuestion();
-    return data.results[0].question;
+    numero_pregutna++;
+    return data.results[numero_pregutna].question;
 }
 
 // Función que devuelve la respuesta del JSON
 export async function getAnswer(): Promise<string> {
-    return data.results[0].correct_answer;
+    return data.results[numero_pregutna].correct_answer;
 }
 
 // Función que devuelve la categoría del JSON
 export async function getCategory(): Promise<string> {
-    return data.results[0].category;
+    return data.results[numero_pregutna].category;
 }
 
 // Función que devuelve la dificultad del JSON
 export async function getDifficulty(): Promise<string> {
-    return data.results[0].difficulty;
+    return data.results[numero_pregutna].difficulty;
 }

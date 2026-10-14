@@ -22,7 +22,6 @@ export async function getQuestion(): Promise<string> {
 }
 
 boton_true!.addEventListener("click", async () => {
-    console.log(await api.getAnswer());
     if(await api.getAnswer() === "True"){await render.acierto();}
     else {render.fallo(boton_true!, boton_false!, boton_reiniciar!);}
 });

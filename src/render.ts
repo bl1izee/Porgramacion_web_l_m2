@@ -1,4 +1,5 @@
 import * as logic from "./logica.ts";
+import { newQuestion as apiNuewQuestion, getQuestion } from "./api.ts";
 
 // Aseguramos que el elemento existe con el !
 const question_box = document.querySelector("#question")!;
@@ -21,16 +22,11 @@ export async function newQuestion() {
     } catch (error: unknown) {
         texto = "Error al cargar pregunta desde la API"
     } finally {
-        await sleep(1000);
         question_box.textContent = texto
     }
 }
 
-// Creamos una función auxiliar para esperar (sleep) en milisegundos
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
 export async function acierto(){
-    // Esperamos 2 segundo antes de hacer la petición para no saturar la API
     await newQuestion();
     document.querySelector("#question_number")!.textContent = String(incrementarNumero());
 }
@@ -42,4 +38,5 @@ export function fallo(boton_true:Element, boton_false:Element, boton_reiniciar:E
     boton_reiniciar.removeAttribute("hidden");
 }
 
+await apiNuewQuestion();
 await newQuestion();
