@@ -1,17 +1,29 @@
-/* ========== Fichero encargado SOLO de hablar con la API ========== */
-import type { response } from "./logica";
+import type { Pregunta, RespuestaAPI } from "./types";
 
-// Creamos un error que extienda de la clase Error por si la API falla
-export class ErrorQuestion extends Error {
-  constructor() {
-    super("Error al obtener una petición a la API");
-    this.name = "ErrorQuestion";
-  }
-}
+export async function newQuestion(): Promise<Pregunta[]> {
+    const respuesta = await fetch("https://opentdb.com/api.php?amount=5&type=boolean");
 
-// Función que obtiene una nueva pregunta de la API
-export async function newQuestion(): Promise<response>  {
-    const respuesta = await fetch('https://opentdb.com/api.php?amount=5&type=boolean&difficulty=easy');
-    if (!respuesta.ok) throw new ErrorQuestion();
-    return await respuesta.json();
+    if (!respuesta.ok) {
+        throw new Error(
+            `Error HTTP: ${respuesta.status}`
+        );
+    }
+
+    const datos: RespuestaAPI = await respuesta.json();
+
+    if (datos.response_code !== 0 || datos.results.length === 0) {
+        throw new Error(
+            "La API no ha podido proporcionar preguntas."
+        );
+    }
+
+    console.log(datos)
+
+    // Transformamos el formato de la API al formato de nuestro juego.
+    return datos.results.map(pregunta => ({
+        texto: pregunta.question,
+        correcta: pregunta.correct_answer === "True", // Lo convierte a bool el dato
+        categoria: pregunta.category,
+        dificultad: pregunta.difficulty
+    }));
 }

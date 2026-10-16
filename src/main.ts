@@ -1,97 +1,84 @@
-import * as api from  "./api.ts";
-import * as render from "./render.ts";
-import * as logica from "./logica.ts";
+import * as api from "./api";
+import * as logica from "./logica";
+import * as render from "./render";
+import type { Pregunta } from "./types";
 
-// Botones del juego
-const boton_true = document.querySelector("#true");
-const boton_false = document.querySelector("#false");
-const boton_reiniciar = document.querySelector("#reiniciar");
+const botonTrue = document.querySelector("#true")!;
+const botonFalse = document.querySelector("#false")!;
+const botonReiniciar = document.querySelector("#reiniciar")!;
+const statsBox = document.querySelector("#stats")!;
 
-// Guadra los datos de la api
-let data:logica.response;
+let preguntas: Pregunta[] = [];
 
-// Función recursiva que se vuelve a llamar en caso de que haya saltado el fallo de la API
-async function preguntarApi() {
-    let data_tmp:logica.response;
+async function iniciar(): Promise<void> {
+    // Reiniciamos los valores de la página
+    render.mostrarCarga();
+
     try {
-        // Mensaje de espera mientras carga la API
-        render.newQuestion("Cunsultando a la API...");
+        // La API devuelve preguntas transformadas y validadas.
+        preguntas = await api.newQuestion();
 
-        // Esperamos 2 segundo antes de continuar
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Mostramos la pantalla de cargando API
+        logica.reiniciarPartida();
 
-        // Ahora pedimos los datos a la API
-        data_tmp = await api.newQuestion();
+        // Pedimos la pregunta
+        const pregunta = logica.preguntaActual(preguntas);
+
+        // Mostramos la pregunta
+        render.mostrarPregunta(pregunta!, logica.getNumeroPregunta(), preguntas.length + 1);
+        
+        // Mostramos los botones de True|False y la caja de stats
+        statsBox.removeAttribute("hidden");
+        botonTrue.removeAttribute("hidden");
+        botonFalse.removeAttribute("hidden");
     } catch (error: unknown) {
-        if (error instanceof api.ErrorQuestion) { // Si el erro es producido por que no carga la API, esperamos 2 segundos y volvemos a crear la consulta
-            console.error("Error controlado de la API:", error.message);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            return await preguntarApi();
-        }
-    }
+        console.error("Error al iniciar el juego:", error);
 
-    return data_tmp!;
+        // Mostramos el mensaje del error
+        const mensaje = error instanceof Error ? error.message : "Ha ocurrido un error inesperado.";
+        render.mostrarError(`No se ha podido iniciar el juego. ${mensaje}`);
+    }
 }
 
-async function iniciar(){
-    let texto: string = "";
+function responder(respuestaUsuario: boolean): void {
+    const pregunta:Pregunta = logica.preguntaActual(preguntas)!;
 
-    // Desabilitamos los botones para que no haya fallo mientras carga la API
-    boton_true!.setAttribute("disabled","");
-    boton_false!.setAttribute("disabled","");
+    // Deshabilitamos ambos botones mientras procesamos la respuesta.
+    botonTrue.setAttribute("disabled","");
+    botonFalse.setAttribute("disabled","");
 
-    // Primero hacemos la consulta a la API
-    data = await preguntarApi();
-    // Procesamos lo que nos ha devuelto para sacar la pregunta
-    texto = logica.getQuestion(data);
+    const correcta = logica.comprobarRespuesta(pregunta, respuestaUsuario);
 
-    // Imprimimos por pantalla la pregunta
-    render.newQuestion(texto);
+    if (!correcta) {
+        render.mostrarDerrota();
+        return;
+    }
 
-    // Abilitamos los botones
-    boton_true!.removeAttribute("disabled");
-    boton_false!.removeAttribute("disabled");
+    logica.avanzarPregunta();
+
+    if (!logica.hayPreguntas(preguntas)) {
+        render.mostrarVictoria();
+        return;
+    }
+
+    const siguiente = logica.preguntaActual(preguntas);
+
+    render.mostrarPregunta(
+        siguiente!,
+        logica.getNumeroPregunta(),
+        preguntas.length
+    );
+
+    // Reabilitamos ambos botones
+    botonTrue.removeAttribute("disabled");
+    botonFalse.removeAttribute("disabled");
 }
 
-// Listeners del juego
-boton_true!.addEventListener("click", async () => {
-    if(logica.getAnswer(data) === "True"){
-        render.acierto(String(logica.incrementarNumeroPregunta()));
-        logica.nextQuestion(data);
-    }
-    else {
-        let tot_preguntas = localStorage.getItem("tot_preguntas");
+botonTrue.addEventListener("click", () => responder(true));
+botonFalse.addEventListener("click", () => responder(false));
 
-        if (tot_preguntas === null){
-            localStorage.setItem("tot_preguntas", "1");
-        }
-        else{
-            localStorage.setItem("tot_preguntas", String(Number(localStorage.getItem("tot_preguntas")!) + 1));
-        }
-        render.fallo(boton_true!, boton_false!, boton_reiniciar!);
-    }
-});
+// Reiniciamos el juego volviendolo a iniciar
+botonReiniciar.addEventListener("click", () => iniciar());
 
-boton_false!.addEventListener("click", async () => {
-    if(logica.getAnswer(data) === "False"){
-        render.acierto(String(logica.incrementarNumeroPregunta()));
-        logica.nextQuestion(data);
-    }
-    else {
-        let tot_preguntas = localStorage.getItem("tot_preguntas");
-
-        if (tot_preguntas === null){
-            localStorage.setItem("tot_preguntas", "1");
-        }
-        else{
-            localStorage.setItem("tot_preguntas", String(Number(localStorage.getItem("tot_preguntas")!) + 1));
-        }
-
-        render.fallo(boton_true!, boton_false!, boton_reiniciar!);
-    }
-});
-
-boton_reiniciar!.addEventListener("click", () => {location.reload();})
-
-// Función inicial
-await iniciar()
+// Arranque protegido dentro de iniciar()
+iniciar();

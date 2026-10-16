@@ -1,37 +1,66 @@
-import { stats as stats_storage } from "./logica";
+import type { Pregunta } from "./types";
 
-// Aseguramos que el elemento existe con el !
-const question_box = document.querySelector("#question")!;
-const question_number_text = document.querySelector("#question_number_text")!;
+const questionBox = document.querySelector("#question")!;
+const questionNumberText = document.querySelector("#question_number_text")!;
+const questionNumber = document.querySelector("#question_number")!;
+const statsBox = document.querySelector("#stats")!;
+const botonTrue = document.querySelector("#true")!;
+const botonFalse = document.querySelector("#false")!;
+const botonReiniciar = document.querySelector("#reiniciar")!;
 
-export function newQuestion(question: string) {
-    question_box.textContent = question
+export function mostrarPregunta(pregunta: Pregunta, numero: number, total: number): void {
+    questionBox.textContent = pregunta.texto;
+    questionNumber.textContent = String(numero);
+    questionNumberText.textContent = `${numero}/${total}`;
+
+    statsBox.textContent = `C: ${pregunta.categoria} · D: ${pregunta.dificultad}`;
+
+    botonTrue.removeAttribute("hidden");
+    botonFalse.removeAttribute("hidden");
+    botonReiniciar.setAttribute("hidden","");
+
+    botonTrue.removeAttribute("disabled");
+    botonFalse.removeAttribute("disabled");
 }
 
-export function acierto(numero:string){
-    document.querySelector("#question_number")!.textContent = numero;
+export function mostrarCarga(): void {
+    questionBox.textContent = "Consultando a la API...";
+    botonTrue.setAttribute("hidden","");
+    botonFalse.setAttribute("hidden","");
+    statsBox.setAttribute("hidden","");
 }
 
-export function fallo(boton_true:Element, boton_false:Element, boton_reiniciar:Element){
-    question_box.textContent = "No conseguiste salvarlos, el mal ha ganado!!"
-    question_number_text.remove()
-    boton_true.setAttribute("hidden","");
-    boton_false.setAttribute("hidden","");
-    boton_reiniciar.removeAttribute("hidden");
+export function mostrarError(mensaje: string): void {
+    questionBox.textContent = mensaje;
+
+    botonTrue.setAttribute("hidden","");
+    botonFalse.setAttribute("hidden","");
+    statsBox.setAttribute("hidden","");
+    botonReiniciar.removeAttribute("hidden");
+
+    botonReiniciar.textContent = "Reintentar";
 }
 
+export function mostrarVictoria(): void {
+    questionBox.textContent = "¡Has ganado! Has derrotado al mal, sabio caballero.";
 
-export function victoria(boton_true: Element, boton_false: Element, boton_reiniciar: Element){
-    // Llamamos a fallo para que ponga el botón de reiniciar
-    fallo(boton_true, boton_false, boton_reiniciar);
-    
-    // Quitamos el texto de la pregunta por la que vamos
-    question_number_text.remove();
+    questionNumberText.textContent = "";
 
-    // Cambiamos el texto de la caja de preguntas por victorias
-    question_box.textContent = "Has ganado, felicidades! Has derrotado al mal sabio caballero..."
+    botonTrue.setAttribute("hidden","");
+    botonFalse.setAttribute("hidden","");
+    botonReiniciar.removeAttribute("hidden");
 
-    let stats_user = stats_storage();
-    const stats = document.querySelector("#stats")
-    stats!.textContent = `Aciertos: ${stats_user.tot_acert} | Fallos: ${stats_user.tot_falla} | Media: ${stats_user.media}`;
+    botonReiniciar.textContent = "Jugar otra vez";
+}
+
+export function mostrarDerrota(): void {
+    questionBox.textContent = "No conseguiste salvarlos. ¡El mal ha ganado!";
+
+    questionNumberText.textContent = "";
+
+    botonTrue.setAttribute("hidden","");
+    botonFalse.setAttribute("hidden","");
+    botonReiniciar.removeAttribute("hidden");
+
+    botonReiniciar.textContent = "Volver a jugar";
 }
