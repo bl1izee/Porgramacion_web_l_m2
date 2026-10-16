@@ -1,24 +1,53 @@
-# Porgramacion_web_l_m2
+## Cómo ejecutar el proyecto
 
-Misión M2 · Async Odyssey
+### Requisitos
 
-## Cómo probarlo
-Abre index.html en el navegador (o con Live Server) y contesta todas las 
-preguntas hasta conseguir acertar 5 para ganar.
+- Node.js
+- npm
+
+### Instalación
+
+Clona el repositorio y accede a la carpeta del proyecto:
+
+```bash
+git clone https://github.com/bl1izee/Porgramacion_web_l_m2.git
+cd Porgramacion_web_l_m2
+```
+
+Instala las dependencias:
+
+```bash
+npm install
+```
+
+### Ejecución en desarrollo
+
+Arranca el servidor de Vite:
+
+```bash
+npm run dev
+```
+
+Abre en el navegador la dirección local que indique la terminal.
+
+**Importante:** no abras `index.html` directamente. El proyecto utiliza TypeScript y Vite para ejecutar y procesar los módulos.
+
+### Compilación
+
+Para comprobar los tipos y generar la versión de producción:
+
+```bash
+npm run build
+```
+
+## Tecnologías
+
+- TypeScript
+- Vite
+- Open Trivia Database (OpenTDB)
+- HTML y CSS
+- `fetch`, `async/await` y `localStorage`
 
 ## Uso de IA
-Usé ChatGPT como pareja de programación.
-Ejemplo de prompt: "Como desabilitar un botón en js?" o "Haz una revisión 
-en busca de correcciones esteticas y gramaticales".
-Verifiqué cada cambio jugando una partida completa antes de aceptar la
-siguiente fase, y probé los casos límite.
-Escribí manualmente todo el código, utilizando IA como apoyo puntual para 
-resolver dudas de sintaxis, depurar errores y revisar aspectos estéticos.
 
-## Autopsia
-1. Tube que decidir como implementar la logica de la api, ya que tenía la 
-opción de pedir pregunta por pregunta a la api o hacer una petición con las
-preguntas a la vez.
-2. Estube muy altanto de no confundir que poner en main, render logica y api,
-ya que algunas funcionalidades se podían hacer en cualuqiera de los
-archivos, pero no quería desviar la lógica de cada archivo
+Se ha utilizado ChatGPT como apoyo para resolver dudas, analizar errores y revisar posibles mejoras. Las propuestas se revisan y prueban antes de incorporarlas al proyecto.
