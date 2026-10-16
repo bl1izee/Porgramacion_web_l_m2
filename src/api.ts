@@ -17,8 +17,6 @@ export async function newQuestion(): Promise<Pregunta[]> {
         );
     }
 
-    console.log(datos)
-
     // Transformamos el formato de la API al formato de nuestro juego.
     return datos.results.map(pregunta => ({
         texto: pregunta.question,
