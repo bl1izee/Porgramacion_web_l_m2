@@ -1,53 +1,27 @@
-## Cómo ejecutar el proyecto
+# Porgramacion_web_l_m2
 
-### Requisitos
+Misión M2 · Async Odyssey
 
-- Node.js
-- npm
-
-### Instalación
-
-Clona el repositorio y accede a la carpeta del proyecto:
-
-```bash
-git clone https://github.com/bl1izee/Porgramacion_web_l_m2.git
-cd Porgramacion_web_l_m2
-```
-
-Instala las dependencias:
+## Cómo probarlo
+Clona el repositorio y accede a la carpeta del proyecto, instala las dependencias con:
 
 ```bash
 npm install
 ```
 
-### Ejecución en desarrollo
-
-Arranca el servidor de Vite:
+y arranca el servidor de Vite:
 
 ```bash
 npm run dev
 ```
 
-Abre en el navegador la dirección local que indique la terminal.
-
-**Importante:** no abras `index.html` directamente. El proyecto utiliza TypeScript y Vite para ejecutar y procesar los módulos.
-
-### Compilación
-
-Para comprobar los tipos y generar la versión de producción:
-
-```bash
-npm run build
-```
-
-## Tecnologías
-
-- TypeScript
-- Vite
-- Open Trivia Database (OpenTDB)
-- HTML y CSS
-- `fetch`, `async/await` y `localStorage`
-
 ## Uso de IA
-
 Se ha utilizado ChatGPT como apoyo para resolver dudas, analizar errores y revisar posibles mejoras. Las propuestas se revisan y prueban antes de incorporarlas al proyecto.
+
+## Autopsia
+1. Tube que decidir como implementar la logica de la api, ya que tenía la 
+opción de pedir pregunta por pregunta a la api o hacer una petición con las
+preguntas a la vez.
+2. Estube muy altanto de no confundir que poner en main, render logica y api,
+ya que algunas funcionalidades se podían hacer en cualuqiera de los
+archivos, pero no quería desviar la lógica de cada archivo
